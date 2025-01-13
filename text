@@ -1,0 +1,50 @@
+db
+
+const mysql = require('mysql2/promise'); // Importa o módulo mysql2
+
+// Criação da conexão com o banco de dados
+const conexao = mysql.createPool({
+  host: '34.95.159.20', // Seu host (pode ser localhost)
+  user: 'joannegton',      // Seu usuário do MySQL
+  password: 'curso-node',      // Sua senha do MySQL
+  database: 'sistema_veterinario' // Nome do banco de dados
+});
+
+// função para testar a conexão
+async function testarConexao() {
+    try {
+        await conexao.query('SELECT 1');
+        console.log('Conexão com o banco de dados realizada com sucesso!');
+    } catch (erro) {
+        console.error('Erro ao se conectar ao banco de dados: ' + erro);
+    }
+}
+
+testarConexao(); // Testa a conexão
+
+module.exports = conexao;
+
+
+index:
+
+//Dependencias 
+const express = require("express");
+const conexao = require("./db");
+
+const app = express() //Cria o servidor
+
+//Rotas
+
+//Rota consulta Clientes /clientes
+app.get("/usuarios", async (req , res) => {
+    const query = "SELECT * FROM usuarios" //Pegando os usuarios do Banco de Dados
+    try{
+        const [usuarios] = await conexao.query(query) //Peidndo um item pelo query (ja que a conexão é uma pull)
+        res.json(usuarios)
+        console.log(usuarios)
+    }
+    catch (error){
+        console.error("O erro foi:",error) //erro de promisse
+    }
+})
+
